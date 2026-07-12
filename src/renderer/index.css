@@ -1,0 +1,166 @@
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+:root {
+  --bg: #EDE8D0;
+  --sidebar-bg: #EDE8D0;
+  --toolbar-bg: #EDE8D0;
+  --webview-bg: #F5F1E3;
+  --surface: #E6E0C8;
+  --surface2: #DDD7BE;
+  --border: rgba(0,0,0,0.07);
+  --text-1: #1C1A0F;
+  --text-2: #5C5440;
+  --text-3: #9C8E6E;
+  --accent: #E17E45;
+  --accent-hover: #C96A2E;
+  --accent-soft: rgba(225,126,69,0.10);
+  --hover-bg: rgba(0,0,0,0.05);
+  --active-bg: rgba(225,126,69,0.10);
+  --shadow: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+  --sidebar-width: 200px;
+  --toolbar-height: 52px;
+  --transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
+}
+
+html.dark {
+  --bg: #16151A;
+  --sidebar-bg: #16151A;
+  --toolbar-bg: #16151A;
+  --webview-bg: #1E1C24;
+  --surface: #1E1C24;
+  --surface2: #26232E;
+  --border: rgba(255,255,255,0.06);
+  --text-1: #F0EDE4;
+  --text-2: #A89880;
+  --text-3: #6B5A4E;
+  --accent: #D76B00;
+  --accent-hover: #E8820A;
+  --accent-soft: rgba(215,107,0,0.12);
+  --hover-bg: rgba(255,255,255,0.05);
+  --active-bg: rgba(215,107,0,0.12);
+  --shadow: 0 1px 4px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input { font-family: inherit; }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface2);
+  border-radius: var(--radius-pill);
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.webview-wrapper {
+  transition: opacity 0.15s ease;
+}
+.webview-wrapper.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.webview-wrapper.visible {
+  opacity: 1;
+}
+
+.animate-in {
+  animation: fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.sidebar-item {
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  cursor: pointer;
+}
+.sidebar-item:hover {
+  background: var(--hover-bg) !important;
+}
+.sidebar-item.active {
+  background: var(--active-bg);
+  color: var(--accent);
+}
+
+.toolbar-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  color: var(--text-2);
+  cursor: pointer;
+}
+.toolbar-btn:hover:not(:disabled) {
+  background: var(--hover-bg);
+  color: var(--text-1);
+}
+.toolbar-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.address-bar {
+  height: 36px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  width: 100%;
+  max-width: 825px;
+  transition: var(--transition);
+}
+.address-bar:focus-within {
+  border-color: var(--accent);
+  background: var(--webview-bg);
+  box-shadow: 0 0 0 3px rgba(225,126,69,0.12);
+}

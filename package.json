@@ -1,0 +1,85 @@
+{
+  "name": "cove",
+  "productName": "Cove",
+  "version": "1.0.0",
+  "description": "Cove Browser",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "concurrently \"webpack serve --config webpack.config.js\" \"wait-on http://localhost:8080 && electron .\"",
+    "build": "webpack --config webpack.config.js",
+    "round-icon": "node scripts/round-icon.js",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.0",
+    "electron-store": "^8.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "babel-loader": "^9.1.0",
+    "concurrently": "^8.0.0",
+    "css-loader": "^6.8.0",
+    "electron": "^25.0.0",
+    "electron-builder": "^26.15.3",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "sharp": "^0.35.3",
+    "style-loader": "^3.3.0",
+    "wait-on": "^7.0.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "build": {
+    "appId": "com.covebrowser.cove",
+    "productName": "Cove",
+    "copyright": "Copyright © 2026 Cove Browser",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "dist/**/*",
+      "favicon-96x96.png",
+      "favicon.ico",
+      "favicon.svg",
+      "icon-256.png",
+      "icon-256-rounded.png",
+      "apple-touch-icon.png",
+      "site.webmanifest",
+      "web-app-manifest-192x192.png",
+      "web-app-manifest-512x512.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "icon-256-rounded.png",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Cove",
+      "menuCategory": "Cove Browser",
+      "runAfterFinish": true,
+      "perMachine": false,
+      "unicode": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": null
+  }
+}

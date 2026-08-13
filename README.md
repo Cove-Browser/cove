@@ -7,14 +7,14 @@
   
   A minimal, beautiful browser built for Windows. Sidebar tabs, warm design, and a browsing experience that stays out of your way.
 
-  [![Release](https://img.shields.io/badge/version-1.0.0_Beta-E17E45?style=flat-square)](https://github.com/Cove-Browser/cove/releases)
+  [![Release](https://img.shields.io/badge/version-1.1.0_Beta-E17E45?style=flat-square)](https://github.com/Cove-Browser/cove/releases)
   [![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square)](https://github.com/Cove-Browser/cove/releases)
   [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 </div>
 
 ## Download
 
- **[Download Cove Browser Beta 1.0.0](https://github.com/Cove-Browser/cove/releases/latest)**
+ **[Download Cove Browser Beta 1.1.0](https://github.com/Cove-Browser/cove/releases/latest)**
 
 Windows 10/11 · x64 · Free & Open Source
 

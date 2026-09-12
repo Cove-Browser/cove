@@ -1,0 +1,37 @@
+{
+  "sidebar": {
+    "newTab": "Nouvel onglet",
+    "bookmarks": "Favoris",
+    "history": "Historique",
+    "downloads": "Téléchargements",
+    "settings": "Paramètres"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "appearance": "Apparence",
+    "searchEngine": "Moteur de recherche",
+    "keyboardShortcuts": "Raccourcis clavier",
+    "privacy": "Confidentialité",
+    "digitalWellbeing": "Bien-être numérique",
+    "aboutCove": "À propos de Cove",
+    "theme": "Thème",
+    "system": "Système",
+    "light": "Clair",
+    "dark": "Sombre",
+    "defaultSearchEngine": "Moteur de recherche par défaut",
+    "language": "Langue"
+  },
+  "toolbar": {
+    "back": "Retour",
+    "forward": "Avancer",
+    "refresh": "Actualiser",
+    "stop": "Arrêter",
+    "home": "Accueil",
+    "bookmark": "Ajouter aux favoris",
+    "removeBookmark": "Supprimer des favoris",
+    "menu": "Menu"
+  },
+  "newTab": {
+    "timeFormat": "12 heures"
+  }
+}

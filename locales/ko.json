@@ -1,0 +1,37 @@
+{
+  "sidebar": {
+    "newTab": "새 탭",
+    "bookmarks": "북마크",
+    "history": "기록",
+    "downloads": "다운로드",
+    "settings": "설정"
+  },
+  "settings": {
+    "title": "설정",
+    "appearance": "모양",
+    "searchEngine": "검색 엔진",
+    "keyboardShortcuts": "키보드 단축키",
+    "privacy": "개인정보",
+    "digitalWellbeing": "디지털 웰빙",
+    "aboutCove": "Cove 정보",
+    "theme": "테마",
+    "system": "시스템",
+    "light": "밝게",
+    "dark": "어둡게",
+    "defaultSearchEngine": "기본 검색 엔진",
+    "language": "언어"
+  },
+  "toolbar": {
+    "back": "뒤로",
+    "forward": "앞으로",
+    "refresh": "새로고침",
+    "stop": "중지",
+    "home": "홈",
+    "bookmark": "이 페이지 북마크",
+    "removeBookmark": "북마크 제거",
+    "menu": "메뉴"
+  },
+  "newTab": {
+    "timeFormat": "12시간"
+  }
+}

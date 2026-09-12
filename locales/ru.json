@@ -1,0 +1,37 @@
+{
+  "sidebar": {
+    "newTab": "Новая вкладка",
+    "bookmarks": "Закладки",
+    "history": "История",
+    "downloads": "Загрузки",
+    "settings": "Настройки"
+  },
+  "settings": {
+    "title": "Настройки",
+    "appearance": "Внешний вид",
+    "searchEngine": "Поисковая система",
+    "keyboardShortcuts": "Горячие клавиши",
+    "privacy": "Конфиденциальность",
+    "digitalWellbeing": "Цифровое благополучие",
+    "aboutCove": "О Cove",
+    "theme": "Тема",
+    "system": "Системная",
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "defaultSearchEngine": "Поисковая система по умолчанию",
+    "language": "Язык"
+  },
+  "toolbar": {
+    "back": "Назад",
+    "forward": "Вперёд",
+    "refresh": "Обновить",
+    "stop": "Остановить",
+    "home": "Домашняя страница",
+    "bookmark": "Добавить в закладки",
+    "removeBookmark": "Удалить закладку",
+    "menu": "Меню"
+  },
+  "newTab": {
+    "timeFormat": "12-часовой"
+  }
+}

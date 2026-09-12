@@ -1,0 +1,37 @@
+{
+  "sidebar": {
+    "newTab": "Tab Baru",
+    "bookmarks": "Tanda Buku",
+    "history": "Sejarah",
+    "downloads": "Muat Turun",
+    "settings": "Tetapan"
+  },
+  "settings": {
+    "title": "Tetapan",
+    "appearance": "Penampilan",
+    "searchEngine": "Enjin Carian",
+    "keyboardShortcuts": "Pintasan Papan Kekunci",
+    "privacy": "Privasi",
+    "digitalWellbeing": "Kesejahteraan Digital",
+    "aboutCove": "Tentang Cove",
+    "theme": "Tema",
+    "system": "Sistem",
+    "light": "Cerah",
+    "dark": "Gelap",
+    "defaultSearchEngine": "Enjin Carian Lalai",
+    "language": "Bahasa"
+  },
+  "toolbar": {
+    "back": "Undur",
+    "forward": "Maju",
+    "refresh": "Muat Semula",
+    "stop": "Berhenti",
+    "home": "Laman Utama",
+    "bookmark": "Tanda Buku Halaman Ini",
+    "removeBookmark": "Buang Tanda Buku",
+    "menu": "Menu"
+  },
+  "newTab": {
+    "timeFormat": "12-jam"
+  }
+}

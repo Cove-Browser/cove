@@ -1,0 +1,37 @@
+{
+  "sidebar": {
+    "newTab": "新しいタブ",
+    "bookmarks": "ブックマーク",
+    "history": "履歴",
+    "downloads": "ダウンロード",
+    "settings": "設定"
+  },
+  "settings": {
+    "title": "設定",
+    "appearance": "外観",
+    "searchEngine": "検索エンジン",
+    "keyboardShortcuts": "キーボードショートカット",
+    "privacy": "プライバシー",
+    "digitalWellbeing": "デジタルウェルビーイング",
+    "aboutCove": "Coveについて",
+    "theme": "テーマ",
+    "system": "システム",
+    "light": "ライト",
+    "dark": "ダーク",
+    "defaultSearchEngine": "デフォルトの検索エンジン",
+    "language": "言語"
+  },
+  "toolbar": {
+    "back": "戻る",
+    "forward": "進む",
+    "refresh": "更新",
+    "stop": "停止",
+    "home": "ホーム",
+    "bookmark": "このページをブックマーク",
+    "removeBookmark": "ブックマークを削除",
+    "menu": "メニュー"
+  },
+  "newTab": {
+    "timeFormat": "12時間"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "sidebar": {
+    "newTab": "New Tab",
+    "bookmarks": "Bookmarks",
+    "history": "History",
+    "downloads": "Downloads",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "searchEngine": "Search Engine",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "privacy": "Privacy",
+    "digitalWellbeing": "Digital Wellbeing",
+    "aboutCove": "About Cove",
+    "theme": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark",
+    "defaultSearchEngine": "Default Search Engine",
+    "language": "Language"
+  },
+  "toolbar": {
+    "back": "Back",
+    "forward": "Forward",
+    "refresh": "Refresh",
+    "stop": "Stop",
+    "home": "Home",
+    "bookmark": "Bookmark this page",
+    "removeBookmark": "Remove Bookmark",
+    "menu": "Menu"
+  },
+  "newTab": {
+    "timeFormat": "12-hour"
+  }
+}

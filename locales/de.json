@@ -1,0 +1,37 @@
+{
+  "sidebar": {
+    "newTab": "Neuer Tab",
+    "bookmarks": "Lesezeichen",
+    "history": "Verlauf",
+    "downloads": "Downloads",
+    "settings": "Einstellungen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "appearance": "Darstellung",
+    "searchEngine": "Suchmaschine",
+    "keyboardShortcuts": "Tastaturkürzel",
+    "privacy": "Datenschutz",
+    "digitalWellbeing": "Digitales Wohlbefinden",
+    "aboutCove": "Über Cove",
+    "theme": "Design",
+    "system": "System",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "defaultSearchEngine": "Standard-Suchmaschine",
+    "language": "Sprache"
+  },
+  "toolbar": {
+    "back": "Zurück",
+    "forward": "Vor",
+    "refresh": "Aktualisieren",
+    "stop": "Stopp",
+    "home": "Startseite",
+    "bookmark": "Lesezeichen hinzufügen",
+    "removeBookmark": "Lesezeichen entfernen",
+    "menu": "Menü"
+  },
+  "newTab": {
+    "timeFormat": "12-Stunden"
+  }
+}

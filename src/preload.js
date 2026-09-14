@@ -24,5 +24,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   exportData: () => ipcRenderer.invoke('export-data'),
   showNotification: (title, body) => ipcRenderer.invoke('show-notification', title, body),
   fetchSearchSuggestions: (query, engine) => ipcRenderer.invoke('fetch-search-suggestions', query, engine),
-  chromiumVersion: process.versions.chrome
+  chromiumVersion: process.versions.chrome,
+  encryptPassword: (password) => ipcRenderer.invoke('encrypt-password', password),
+  decryptPassword: (encryptedBase64) => ipcRenderer.invoke('decrypt-password', encryptedBase64)
 });

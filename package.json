@@ -75,7 +75,8 @@
       "runAfterFinish": true,
       "perMachine": false,
       "unicode": true,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "license": "build/license.txt"
     },
     "publish": null
   }

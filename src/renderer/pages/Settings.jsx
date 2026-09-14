@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function Settings({ onNavigate, settings, setSettings, isDark, setTheme, searchEngine, setSearchEngine, language, setLanguage }) {
+export default function Settings({ onNavigate, onOpenInNewTab, settings, setSettings, isDark, setTheme, searchEngine, setSearchEngine, language, setLanguage }) {
   const { t } = useTranslation();
   const [theme, setThemeState] = useState('system');
   const [cleared, setCleared] = useState(false);
@@ -520,20 +520,38 @@ export default function Settings({ onNavigate, settings, setSettings, isDark, se
               }}>
                 Cove stores your browsing history, bookmarks, profile information, and settings locally on your device. Cove does not upload this data to core. studios or any third-party service. You can clear your browsing data at any time using the button above.
               </p>
-              <span
-                onClick={() => window.electronAPI.openExternal('#')}
-                style={{
-                  color: 'var(--accent)',
-                  cursor: 'pointer',
-                  textDecoration: 'none',
-                  fontSize: 14,
-                  fontFamily: 'OpenSauceOne, sans-serif'
-                }}
-                onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
-              >
-                Privacy Policy →
-              </span>
+              <div>
+                <span
+                  onClick={() => onOpenInNewTab('https://corestudios.web.app/corepp.html')}
+                  style={{
+                    color: 'var(--accent)',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    fontSize: 14,
+                    fontFamily: 'OpenSauceOne, sans-serif'
+                  }}
+                  onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                  onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                >
+                  Privacy Policy →
+                </span>
+              </div>
+              <div>
+                <span
+                  onClick={() => onOpenInNewTab('https://corestudios.web.app/covetou.html')}
+                  style={{
+                    color: 'var(--accent)',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    fontSize: 14,
+                    fontFamily: 'OpenSauceOne, sans-serif'
+                  }}
+                  onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                  onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                >
+                  Cove Browser Terms of Use Agreement →
+                </span>
+              </div>
             </div>
           </div>
         );

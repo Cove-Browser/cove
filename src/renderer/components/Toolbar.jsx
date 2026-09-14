@@ -6,7 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContextMenu from './ContextMenu';
 
-export default function Toolbar({ activeTab, onNavigate, onNavigateNew, onBack, onForward, onRefresh, onStop, isDark, hoveredLink, isBookmarked, onToggleBookmark, onHome, zoomLevel, onZoomIn, onZoomOut, onResetZoom, searchEngine }) {
+export default function Toolbar({ activeTab, onNavigate, onNavigateNew, onBack, onForward, onRefresh, onStop, isDark, hoveredLink, isBookmarked, onToggleBookmark, onHome, zoomLevel, onZoomIn, onZoomOut, onResetZoom, searchEngine, isIncognito }) {
   const { t } = useTranslation();
   const [value, setValue] = useState('');
   const [focused, setFocused] = useState(false);
@@ -131,6 +131,8 @@ export default function Toolbar({ activeTab, onNavigate, onNavigateNew, onBack, 
     { label: t('sidebar.bookmarks'), action: () => onNavigate('cove://bookmarks') },
     { label: t('sidebar.history'), action: () => onNavigate('cove://history') },
     { label: t('sidebar.downloads'), action: () => onNavigate('cove://downloads') },
+    ...(isIncognito ? [] : [{ label: 'Cove Password Manager', action: () => onNavigate('cove://cpm') }]),
+    null,
     { label: t('sidebar.settings'), action: () => onNavigate('cove://settings') }
   ];
 

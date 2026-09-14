@@ -33,6 +33,7 @@ export default function Sidebar({ tabs, activeTabId, activeTab, onTabSelect, onT
     { icon: 'fas fa-bookmark', label: t('sidebar.bookmarks'), url: 'cove://bookmarks' },
     { icon: 'fas fa-history', label: t('sidebar.history'), url: 'cove://history', hideInIncognito: true },
     { icon: 'fas fa-download', label: t('sidebar.downloads'), url: 'cove://downloads', hideInIncognito: true },
+    { icon: 'fas fa-key', label: 'Cove Password Manager', url: 'cove://cpm', hideInIncognito: true },
     { icon: 'fas fa-cog', label: t('sidebar.settings'), url: 'cove://settings' }
   ];
 

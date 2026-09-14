@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="favicon-96x96.png" width="80" height="80" />
+  <img src="icon-256.png" width="80" height="80" />
   
   # Cove Browser
   

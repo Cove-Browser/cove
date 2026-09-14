@@ -19,6 +19,7 @@ import Downloads from './pages/Downloads';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Acknowledgements from './pages/Acknowledgements';
+import PasswordManager from './pages/PasswordManager';
 import './i18n';
 import './index.css';
 
@@ -311,7 +312,8 @@ function App() {
       'cove://downloads': 'Downloads',
       'cove://profile': 'Profile',
       'cove://settings': 'Settings',
-      'cove://acknowledgements': 'Acknowledgements'
+      'cove://acknowledgements': 'Acknowledgements',
+      'cove://cpm': 'Cove Password Manager'
     };
     const updates = { url, title: pageTitles[url] || activeTab?.title || 'New Tab', failedLoad: false };
     if (url.startsWith('cove://')) updates.favicon = null;
@@ -428,6 +430,7 @@ function App() {
       case 'cove://profile': return <Profile {...props} />;
       case 'cove://settings': return null;
       case 'cove://acknowledgements': return <Acknowledgements {...props} onNavigate={(url) => navigateTab(activeTabId, url)} />;
+      case 'cove://cpm': return <PasswordManager {...props} onNavigate={(url) => navigateTab(activeTabId, url)} />;
       default: return <div style={{ padding: 20 }}>Page not found</div>;
     }
   };
@@ -465,7 +468,8 @@ function App() {
             'cove://settings': 'Settings',
             'cove://profile': 'Profile',
             'cove://home': 'New Tab',
-            'cove://acknowledgements': 'Acknowledgements'
+            'cove://acknowledgements': 'Acknowledgements',
+            'cove://cpm': 'Cove Password Manager'
           };
           
           if (url === 'cove://settings') {
@@ -571,6 +575,7 @@ function App() {
           searchEngine={searchEngine || 'google'}
           isDark={isDark}
           hoveredLink={hoveredLink}
+          isIncognito={isIncognito}
         />
         <div style={{
           flex: 1,
@@ -742,6 +747,7 @@ function App() {
                     }
                   }, 0);
                 }}
+                onOpenInNewTab={handleOpenInNewTab}
                 profile={profile}
                 setProfile={setProfile}
                 settings={settings}

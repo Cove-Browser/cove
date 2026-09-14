@@ -250,16 +250,56 @@ ipcMain.handle('clear-cookies', async () => {
   return true;
 });
 ipcMain.handle('export-data', async () => {
-  const { dialog } = require('electron');
+  const { dialog, safeStorage } = require('electron');
+  const fs = require('fs');
+  
+  // Get browsing data (history)
   const history = store.get('history', []);
+  
+  // Get bookmarks
   const bookmarks = store.get('bookmarks', []);
-  const settings = store.store;
+  
+  // Get user display name
+  const displayName = store.get('displayName');
+  
+  // Get and decrypt passwords from Cove Password Manager
+  const passwords = store.get('passwords', []);
+  const decryptedPasswords = [];
+  
+  if (safeStorage.isEncryptionAvailable()) {
+    for (const passwordEntry of passwords) {
+      try {
+        const encryptedBuffer = Buffer.from(passwordEntry.encryptedPassword, 'base64');
+        const decryptedPassword = safeStorage.decryptString(encryptedBuffer);
+        decryptedPasswords.push({
+          title: passwordEntry.title,
+          password: decryptedPassword
+        });
+      } catch (error) {
+        console.error('Failed to decrypt password for export:', error);
+        // Skip passwords that can't be decrypted
+      }
+    }
+  }
+  
+  // Get all other store data not already covered
+  const allStoreKeys = Object.keys(store.store);
+  const excludedKeys = ['history', 'bookmarks', 'displayName', 'passwords'];
+  const otherData = {};
+  
+  for (const key of allStoreKeys) {
+    if (!excludedKeys.includes(key)) {
+      otherData[key] = store.get(key);
+    }
+  }
   
   const exportData = {
     exportedAt: new Date().toISOString(),
-    history: history,
+    browsingData: history,
     bookmarks: bookmarks,
-    settings: settings
+    userDisplayName: displayName,
+    passwords: decryptedPasswords,
+    otherData: otherData
   };
   
   const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
@@ -274,7 +314,6 @@ ipcMain.handle('export-data', async () => {
     return { success: false, message: 'Export cancelled' };
   }
   
-  const fs = require('fs');
   fs.writeFileSync(filePath, JSON.stringify(exportData, null, 2), 'utf-8');
   
   return { success: true, message: 'Data exported successfully', path: filePath };
@@ -337,4 +376,24 @@ ipcMain.handle('open-incognito', () => {
   if (isDev) incognitoWindow.loadURL('http://localhost:8080?incognito=true');
   else incognitoWindow.loadFile(path.join(__dirname, '../dist/index.html'), { query: { incognito: 'true' } });
   incognitoWindow.once('ready-to-show', () => incognitoWindow.show());
+});
+
+// Cove Password Manager - Encryption/Decryption using Windows DPAPI
+ipcMain.handle('encrypt-password', (event, password) => {
+  const { safeStorage } = require('electron');
+  if (!safeStorage.isEncryptionAvailable()) {
+    throw new Error('Encryption not available on this system');
+  }
+  const encryptedBuffer = safeStorage.encryptString(password);
+  return encryptedBuffer.toString('base64');
+});
+
+ipcMain.handle('decrypt-password', (event, encryptedBase64) => {
+  const { safeStorage } = require('electron');
+  if (!safeStorage.isEncryptionAvailable()) {
+    throw new Error('Encryption not available on this system');
+  }
+  const encryptedBuffer = Buffer.from(encryptedBase64, 'base64');
+  const decryptedString = safeStorage.decryptString(encryptedBuffer);
+  return decryptedString;
 });

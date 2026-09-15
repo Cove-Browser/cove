@@ -34,7 +34,6 @@ Windows 10/11 · x64 · Free & Open Source
 - React
 - Chromium
 - Font Awesome
-- Inter font
 
 ## Acknowledgements
 

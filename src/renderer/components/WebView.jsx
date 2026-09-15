@@ -126,12 +126,10 @@ const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRe
       visibility: isActive ? 'visible' : 'hidden',
       pointerEvents: isActive ? 'auto' : 'none'
     }}>
-      {/* allowpopups is enabled to support OAuth login flows and other legitimate popup use cases */}
       <webview
         ref={webviewRef}
         partition={isIncognito ? 'incognito' : 'persist:cove'}
         webpreferences="contextIsolation=true, javascript=true, images=true, scrollbounce=true"
-        allowpopups=""
         style={{ width: '100%', height: '100%', border: 'none', display: 'flex' }}
       />
     </div>

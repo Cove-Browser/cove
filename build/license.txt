@@ -1,0 +1,82 @@
+Cove Browser - Terms of Use Agreement
+Last updated: September 2026
+Version: 2.0.0
+
+1. Acceptance of Terms
+
+By downloading, installing, or using Cove Browser ("the Application"), you agree to be bound by these Terms of Use ("Terms"). If you do not agree to these Terms, do not use the Application.
+
+Cove Browser is developed and maintained by core. studios, an independent software studio ("we", "us", or "our"). core. studios is not a registered legal entity. These Terms represent a good-faith agreement between core. studios and you as the user.
+
+2. About Cove Browser
+
+Cove Browser is a free, open-source desktop web browser built for Windows. It is provided at no cost and is intended for personal, non-commercial use. The source code is publicly available on GitHub.
+
+3. License to Use
+
+We grant you a non-exclusive, non-transferable, revocable license to use Cove Browser on your personal device for lawful purposes, subject to these Terms.
+
+You may not:
+- Reverse engineer, decompile, or modify the Application for the purpose of creating a competing product without attribution
+- Redistribute modified versions of the Application without clearly stating that it has been modified from the original
+- Use the Application for any unlawful purpose or in violation of any applicable laws or regulations
+
+As Cove Browser is open-source, contributions, forks, and modifications are otherwise welcome under the terms of the applicable open-source license (MIT License).
+
+4. User Accounts
+
+Cove Browser supports local user profiles. All accounts and profile data are stored entirely on your device. There are no server-side accounts, no cloud sync, and no account registration with core. studios. We have no access to your profile or any data associated with it.
+
+5. Cove Password Manager
+
+Cove Browser includes an integrated password manager ("Cove Password Manager") as a built-in feature.
+
+You must read and understand the following before using Cove Password Manager:
+
+- All passwords saved in Cove Password Manager are stored locally on your device. Passwords are encrypted using your operating system's built-in credential protection (Windows DPAPI) where available.
+- core. studios does not have access to your saved passwords at any time.
+- You are solely responsible for the security of your device and the data stored on it.
+- We strongly advise that you do not store highly sensitive credentials (such as banking or government account passwords) in Cove Password Manager until a future update introduces stronger encryption.
+- core. studios accepts no liability for any loss, theft, or unauthorised access to passwords stored through Cove Password Manager arising from device compromise, data breach, or any other cause.
+
+By using Cove Password Manager, you acknowledge that you have read and understood the above.
+
+Data Export:
+You may export all your saved data, including your browsing data, bookmarks, user display name, and passwords stored in Cove Password Manager, at any time using the Export Data button located in the Settings panel. Exported data is saved locally to a location of your choosing.
+
+6. Privacy and Data
+
+Cove Browser does not collect, transmit, or share any personal data. All data generated through your use of the Application, including browsing history, bookmarks, downloads, settings, and passwords, is stored locally on your device and never leaves it.
+
+For full details, please refer to the core. studios Privacy Policy.
+
+7. Third-Party Content and Websites
+
+Cove Browser is a web browser. The websites and content you access through it are not controlled by core. studios. We are not responsible for the content, privacy practices, or conduct of any third-party website or service accessed through the Application.
+
+8. Open Source and Attribution
+
+Cove Browser is built on Electron and other open-source technologies. Their respective licenses apply to those components. Cove Browser itself is released under the MIT License.
+
+9. Disclaimer of Warranties
+
+Cove Browser is provided "as is" without any warranty of any kind, express or implied. We make no guarantees regarding uptime, reliability, fitness for a particular purpose, or compatibility with your system.
+
+We are an independent, non-commercial studio. We do our best, but we cannot guarantee that the Application will be free of bugs, errors, or interruptions.
+
+10. Limitation of Liability
+
+To the fullest extent permitted by applicable law, core. studios and its team members shall not be liable for any indirect, incidental, special, or consequential damages arising out of your use of or inability to use Cove Browser, including but not limited to data loss, device damage, or security incidents.
+
+11. Changes to These Terms
+
+We may update these Terms from time to time. When we do, we will update the "Last updated" date at the top of this document. Continued use of the Application after changes are published constitutes acceptance of the revised Terms.
+
+12. Governing Law
+
+These Terms are written and intended in good faith. As core. studios is not a registered legal entity, no specific jurisdiction is formally claimed. In the event of any dispute, we encourage users to contact us directly at core.studios.main@gmail.com before pursuing any other course of action.
+
+13. Contact
+
+If you have any questions about these Terms, you can reach us at:
+core.studios.main@gmail.com

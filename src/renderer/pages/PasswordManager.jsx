@@ -58,7 +58,7 @@ export default function PasswordManager({ onNavigate }) {
     
     if (willBeVisible) {
       try {
-        const decrypted = await window.electronAPI.decryptPassword(passwordEntry.encryptedPassword);
+        let decrypted = await window.electronAPI.decryptPassword(passwordEntry.encryptedPassword);
         setDecryptedPasswords(prev => ({
           ...prev,
           [id]: decrypted
@@ -67,6 +67,7 @@ export default function PasswordManager({ onNavigate }) {
           ...prev,
           [id]: true
         }));
+        decrypted = null;
       } catch (error) {
         console.error('Failed to decrypt password:', error);
         alert('Failed to decrypt password. Decryption is not available on this system.');

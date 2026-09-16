@@ -1,11 +1,7 @@
-const { app, BrowserWindow, ipcMain, session, nativeTheme, Menu, clipboard, shell, nativeImage, Tray, Notification } = require('electron');
+const { app, BrowserWindow, ipcMain, session, nativeTheme, Menu, clipboard, shell, nativeImage, Tray, Notification, safeStorage } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
-const { Dpapi, isPlatformSupported } = require('@primno/dpapi');
 const store = new Store();
-
-// Cove Password Manager entropy for DPAPI
-const COVE_ENTROPY = Buffer.from('cove-cpm-entropy-v1-corestudios', 'utf8');
 
 let mainWindow;
 
@@ -84,13 +80,15 @@ function createWindow() {
 app.whenReady().then(() => {
   // Set up secure session for webviews
   const coveSession = session.fromPartition('persist:cove');
-  
+
   // Block dangerous permission requests in webviews
   coveSession.setPermissionRequestHandler((webContents, permission, callback) => {
     const allowedPermissions = ['clipboard-read', 'clipboard-write', 'media', 'geolocation', 'notifications'];
     callback(allowedPermissions.includes(permission));
   });
 
+  // CP2-10c: clear legacy dpapi-encrypted passwords, incompatible with safeStorage
+  store.delete('passwords');
 
   createWindow();
 
@@ -286,13 +284,12 @@ ipcMain.handle('export-data', async (event) => {
   // Get and decrypt passwords from Cove Password Manager
   const passwords = store.get('passwords', []);
   const decryptedPasswords = [];
-  
-  if (isPlatformSupported) {
+
+  if (safeStorage.isEncryptionAvailable()) {
     for (const passwordEntry of passwords) {
       try {
         const encryptedBuffer = Buffer.from(passwordEntry.encryptedPassword, 'base64');
-        const decryptedBuffer = Dpapi.unprotectData(encryptedBuffer, COVE_ENTROPY, 'CurrentUser');
-        let decryptedPassword = decryptedBuffer.toString('utf8');
+        let decryptedPassword = safeStorage.decryptString(encryptedBuffer);
         decryptedPasswords.push({
           title: passwordEntry.title,
           password: decryptedPassword
@@ -300,7 +297,6 @@ ipcMain.handle('export-data', async (event) => {
         decryptedPassword = null;
       } catch (error) {
         console.error('Failed to decrypt password for export:', error);
-        // Skip passwords that can't be decrypted
       }
     }
   }
@@ -415,33 +411,40 @@ ipcMain.handle('open-incognito', () => {
   });
 });
 
-// Cove Password Manager - Encryption/Decryption using Windows DPAPI
+// Cove Password Manager - Encryption/Decryption using Electron safeStorage
 ipcMain.handle('encrypt-password', (event, password) => {
-  const senderUrl = event.senderFrame.url
-  if (!senderUrl.startsWith('cove://') && !senderUrl.startsWith('file://')) {
-    throw new Error('Unauthorized IPC call origin')
+  const senderUrl = event.senderFrame.url;
+  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+  const isAllowedOrigin =
+    senderUrl.startsWith('cove://') ||
+    senderUrl.startsWith('file://') ||
+    (isDev && senderUrl.startsWith('http://localhost'));
+  if (!isAllowedOrigin) {
+    throw new Error('Unauthorized IPC call origin');
   }
-  if (!isPlatformSupported) {
-    throw new Error('DPAPI not available on this system');
+  if (!safeStorage.isEncryptionAvailable()) {
+    throw new Error('Encryption is not available on this system');
   }
-  const passwordBuffer = Buffer.from(password, 'utf8');
-  const encryptedBuffer = Dpapi.protectData(passwordBuffer, COVE_ENTROPY, 'CurrentUser');
+  const encryptedBuffer = safeStorage.encryptString(password);
   return encryptedBuffer.toString('base64');
 });
 
 ipcMain.handle('decrypt-password', (event, encryptedBase64) => {
-  const senderUrl = event.senderFrame.url
-  if (!senderUrl.startsWith('cove://') && !senderUrl.startsWith('file://')) {
-    throw new Error('Unauthorized IPC call origin')
+  const senderUrl = event.senderFrame.url;
+  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+  const isAllowedOrigin =
+    senderUrl.startsWith('cove://') ||
+    senderUrl.startsWith('file://') ||
+    (isDev && senderUrl.startsWith('http://localhost'));
+  if (!isAllowedOrigin) {
+    throw new Error('Unauthorized IPC call origin');
   }
-  if (!isPlatformSupported) {
-    throw new Error('DPAPI not available on this system');
+  if (!safeStorage.isEncryptionAvailable()) {
+    throw new Error('Decryption is not available on this system');
   }
   const encryptedBuffer = Buffer.from(encryptedBase64, 'base64');
-  const decryptedBuffer = Dpapi.unprotectData(encryptedBuffer, COVE_ENTROPY, 'CurrentUser');
-  let decryptedString = decryptedBuffer.toString('utf8');
+  let decryptedString = safeStorage.decryptString(encryptedBuffer);
   const result = decryptedString;
   decryptedString = null;
-  decryptedBuffer = null;
   return result;
 });

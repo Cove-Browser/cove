@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.0",
-    "@primno/dpapi": "^2.0.1",
     "date-fns": "^4.4.0",
     "electron-store": "^8.1.0",
     "i18next": "^26.4.0",

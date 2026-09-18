@@ -394,7 +394,7 @@ export default function PasswordManager({ onNavigate }) {
                   }}>
                     {visiblePasswords[password.id] ? (
                       <span style={{ wordBreak: 'break-all' }}>
-                        {decryptedPasswords[password.id] || '••••••'}
+                        {decryptedPasswords[password.id] !== undefined ? decryptedPasswords[password.id] : '••••••'}
                       </span>
                     ) : (
                       <span>••••••</span>

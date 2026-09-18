@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, session, nativeTheme, Menu, clipboard, shell, nativeImage, Tray, Notification, safeStorage } = require('electron');
+const { app, BrowserWindow, ipcMain, session, nativeTheme, Menu, clipboard, shell, nativeImage, Tray, Notification } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
 const store = new Store();
@@ -32,7 +32,7 @@ function createWindow() {
       allowRunningInsecureContent: false,
       experimentalFeatures: false,
       preload: path.join(__dirname, 'preload.js'),
-      sandbox: true
+      sandbox: false // must be false for preload to work with contextBridge
     }
   });
 
@@ -57,16 +57,17 @@ function createWindow() {
 
   // Block navigation to dangerous protocols
   mainWindow.webContents.on('will-navigate', (event, url) => {
-    if (url.startsWith('file://')) {
+    if (!url.startsWith('http://localhost:8080') && 
+        !url.startsWith('file://') &&
+        !url.startsWith('http://') &&
+        !url.startsWith('https://')) {
       event.preventDefault();
     }
   });
 
   // Block new window creation from the main frame
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('cove://')) return { action: 'allow' }
-    require('electron').shell.openExternal(url)
-    return { action: 'deny' }
+    return { action: 'deny' };
   });
 
   // Prevent permission requests from being auto-granted
@@ -80,15 +81,13 @@ function createWindow() {
 app.whenReady().then(() => {
   // Set up secure session for webviews
   const coveSession = session.fromPartition('persist:cove');
-
+  
   // Block dangerous permission requests in webviews
   coveSession.setPermissionRequestHandler((webContents, permission, callback) => {
     const allowedPermissions = ['clipboard-read', 'clipboard-write', 'media', 'geolocation', 'notifications'];
     callback(allowedPermissions.includes(permission));
   });
 
-  // CP2-10c: clear legacy dpapi-encrypted passwords, incompatible with safeStorage
-  store.delete('passwords');
 
   createWindow();
 
@@ -127,27 +126,13 @@ app.whenReady().then(() => {
             experimentalFeatures: false,
             partition: 'incognito',
             preload: path.join(__dirname, 'preload.js'),
-            sandbox: true
+            sandbox: false
           }
         });
         const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
         if (isDev) incognitoWindow.loadURL('http://localhost:8080?incognito=true');
         else incognitoWindow.loadFile(path.join(__dirname, '../dist/index.html'), { query: { incognito: 'true' } });
         incognitoWindow.once('ready-to-show', () => incognitoWindow.show());
-
-        // Block navigation to file:// URIs in incognito windows
-        incognitoWindow.webContents.on('will-navigate', (event, url) => {
-          if (url.startsWith('file://')) {
-            event.preventDefault();
-          }
-        });
-
-        // Block new window creation from incognito windows
-        incognitoWindow.webContents.setWindowOpenHandler(({ url }) => {
-          if (url.startsWith('cove://')) return { action: 'allow' }
-          require('electron').shell.openExternal(url)
-          return { action: 'deny' }
-        });
       }
     },
     { type: 'separator' },
@@ -264,12 +249,8 @@ ipcMain.handle('clear-cookies', async () => {
   }
   return true;
 });
-ipcMain.handle('export-data', async (event) => {
-  const senderUrl = event.senderFrame.url
-  if (!senderUrl.startsWith('cove://') && !senderUrl.startsWith('file://')) {
-    throw new Error('Unauthorized IPC call origin')
-  }
-  const { dialog } = require('electron');
+ipcMain.handle('export-data', async () => {
+  const { dialog, safeStorage } = require('electron');
   const fs = require('fs');
   
   // Get browsing data (history)
@@ -284,19 +265,19 @@ ipcMain.handle('export-data', async (event) => {
   // Get and decrypt passwords from Cove Password Manager
   const passwords = store.get('passwords', []);
   const decryptedPasswords = [];
-
+  
   if (safeStorage.isEncryptionAvailable()) {
     for (const passwordEntry of passwords) {
       try {
         const encryptedBuffer = Buffer.from(passwordEntry.encryptedPassword, 'base64');
-        let decryptedPassword = safeStorage.decryptString(encryptedBuffer);
+        const decryptedPassword = safeStorage.decryptString(encryptedBuffer);
         decryptedPasswords.push({
           title: passwordEntry.title,
           password: decryptedPassword
         });
-        decryptedPassword = null;
       } catch (error) {
         console.error('Failed to decrypt password for export:', error);
+        // Skip passwords that can't be decrypted
       }
     }
   }
@@ -388,63 +369,31 @@ ipcMain.handle('open-incognito', () => {
       experimentalFeatures: false,
       partition: 'incognito',
       preload: path.join(__dirname, 'preload.js'),
-      sandbox: true
+      sandbox: false
     }
   });
   const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
   if (isDev) incognitoWindow.loadURL('http://localhost:8080?incognito=true');
   else incognitoWindow.loadFile(path.join(__dirname, '../dist/index.html'), { query: { incognito: 'true' } });
   incognitoWindow.once('ready-to-show', () => incognitoWindow.show());
-
-  // Block navigation to file:// URIs in incognito windows
-  incognitoWindow.webContents.on('will-navigate', (event, url) => {
-    if (url.startsWith('file://')) {
-      event.preventDefault();
-    }
-  });
-
-  // Block new window creation from incognito windows
-  incognitoWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('cove://')) return { action: 'allow' }
-    require('electron').shell.openExternal(url)
-    return { action: 'deny' }
-  });
 });
 
-// Cove Password Manager - Encryption/Decryption using Electron safeStorage
+// Cove Password Manager - Encryption/Decryption using Windows DPAPI
 ipcMain.handle('encrypt-password', (event, password) => {
-  const senderUrl = event.senderFrame.url;
-  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
-  const isAllowedOrigin =
-    senderUrl.startsWith('cove://') ||
-    senderUrl.startsWith('file://') ||
-    (isDev && senderUrl.startsWith('http://localhost'));
-  if (!isAllowedOrigin) {
-    throw new Error('Unauthorized IPC call origin');
-  }
+  const { safeStorage } = require('electron');
   if (!safeStorage.isEncryptionAvailable()) {
-    throw new Error('Encryption is not available on this system');
+    throw new Error('Encryption not available on this system');
   }
   const encryptedBuffer = safeStorage.encryptString(password);
   return encryptedBuffer.toString('base64');
 });
 
 ipcMain.handle('decrypt-password', (event, encryptedBase64) => {
-  const senderUrl = event.senderFrame.url;
-  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
-  const isAllowedOrigin =
-    senderUrl.startsWith('cove://') ||
-    senderUrl.startsWith('file://') ||
-    (isDev && senderUrl.startsWith('http://localhost'));
-  if (!isAllowedOrigin) {
-    throw new Error('Unauthorized IPC call origin');
-  }
+  const { safeStorage } = require('electron');
   if (!safeStorage.isEncryptionAvailable()) {
-    throw new Error('Decryption is not available on this system');
+    throw new Error('Decryption not available on this system');
   }
   const encryptedBuffer = Buffer.from(encryptedBase64, 'base64');
-  let decryptedString = safeStorage.decryptString(encryptedBuffer);
-  const result = decryptedString;
-  decryptedString = null;
-  return result;
+  const decryptedString = safeStorage.decryptString(encryptedBuffer);
+  return decryptedString;
 });

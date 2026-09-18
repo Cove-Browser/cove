@@ -49,6 +49,7 @@
     "files": [
       "src/**/*",
       "dist/**/*",
+      "assets/**/*",
       "icon-256.png",
       "package.json"
     ],

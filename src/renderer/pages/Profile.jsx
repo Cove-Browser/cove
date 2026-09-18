@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import ava1Wave from '../../../assets/avatars/ava1-wave.png';
+import ava2Stones from '../../../assets/avatars/ava2-stones.png';
+import ava3Leaf from '../../../assets/avatars/ava3-leaf.png';
+import ava4Gradient from '../../../assets/avatars/ava4-gradient.png';
 
 export default function Profile({ onNavigate, profile, setProfile, isDark }) {
   const [displayName, setDisplayName] = useState(profile?.displayName || 'User');
@@ -11,15 +15,15 @@ export default function Profile({ onNavigate, profile, setProfile, isDark }) {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleAvatarSelect = (avatar) => {
-    setSelectedAvatar(avatar);
+  const handleAvatarSelect = (avatarId) => {
+    setSelectedAvatar(avatarId);
   };
 
   const avatars = [
-    { id: 'ava1-wave.png', name: 'Wave' },
-    { id: 'ava2-stones.png', name: 'Stones' },
-    { id: 'ava3-leaf.png', name: 'Leaf' },
-    { id: 'ava4-gradient.png', name: 'Gradient' }
+    { id: 'ava1-wave.png', name: 'Wave', src: ava1Wave },
+    { id: 'ava2-stones.png', name: 'Stones', src: ava2Stones },
+    { id: 'ava3-leaf.png', name: 'Leaf', src: ava3Leaf },
+    { id: 'ava4-gradient.png', name: 'Gradient', src: ava4Gradient }
   ];
 
   const [avatarErrors, setAvatarErrors] = useState({});
@@ -57,7 +61,7 @@ export default function Profile({ onNavigate, profile, setProfile, isDark }) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, marginBottom: 32 }}>
           {selectedAvatar ? (
             <img
-              src={`../../assets/avatars/${selectedAvatar}`}
+              src={avatars.find(a => a.id === selectedAvatar)?.src}
               alt="Avatar"
               style={{
                 width: 80,
@@ -127,7 +131,7 @@ export default function Profile({ onNavigate, profile, setProfile, isDark }) {
               >
                 {!avatarErrors[avatar.id] ? (
                   <img
-                    src={`../../assets/avatars/${avatar.id}`}
+                    src={avatar.src}
                     alt={avatar.name}
                     style={{
                       width: '100%',

@@ -3,6 +3,10 @@
 // CP2-9 FIX: Removed isRTL prop and RTL-specific context menu positioning since Arabic support was removed.
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import ava1Wave from '../../../assets/avatars/ava1-wave.png';
+import ava2Stones from '../../../assets/avatars/ava2-stones.png';
+import ava3Leaf from '../../../assets/avatars/ava3-leaf.png';
+import ava4Gradient from '../../../assets/avatars/ava4-gradient.png';
 
 export default function Sidebar({ tabs, activeTabId, activeTab, onTabSelect, onTabClose, onNewTab, onTabReorder, onNavigate, isDark, profile, onDuplicateTab, isIncognito }) {
   const { t } = useTranslation();
@@ -42,6 +46,13 @@ export default function Sidebar({ tabs, activeTabId, activeTab, onTabSelect, onT
     const words = name.trim().split(' ');
     if (words.length >= 2) return words[0][0].toUpperCase() + words[1][0].toUpperCase();
     return name.substring(0, 2).toUpperCase();
+  };
+
+  const avatarSrcMap = {
+    'ava1-wave.png': ava1Wave,
+    'ava2-stones.png': ava2Stones,
+    'ava3-leaf.png': ava3Leaf,
+    'ava4-gradient.png': ava4Gradient
   };
 
   return (
@@ -347,7 +358,7 @@ export default function Sidebar({ tabs, activeTabId, activeTab, onTabSelect, onT
         >
           {profile?.avatar ? (
             <img
-              src={`../../assets/avatars/${profile.avatar}`}
+              src={avatarSrcMap[profile.avatar]}
               alt="Avatar"
               style={{
                 width: 28,

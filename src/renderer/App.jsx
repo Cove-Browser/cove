@@ -38,6 +38,7 @@ function App() {
   const [findQuery, setFindQuery] = useState('');
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const webviewRefs = useRef({});
+  const [hiddenTabs, setHiddenTabs] = useState(new Set());
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showOfflineBanner, setShowOfflineBanner] = useState(false);
   const [backOnline, setBackOnline] = useState(false);
@@ -206,28 +207,35 @@ function App() {
   }, [homepage]);
 
   const closeTab = useCallback((tabId) => {
-    // Clean up webview ref to prevent memory leak
-    if (webviewRefs.current[tabId]) {
-      try {
-        webviewRefs.current[tabId].src = 'about:blank';
-      } catch(e) {}
-      delete webviewRefs.current[tabId];
+    // Mark as closing so the webview stays mounted but hidden
+    setHiddenTabs(prev => new Set([...prev, tabId]));
+
+    // Switch away from this tab immediately if it is active
+    if (activeTabId === tabId) {
+      const remaining = tabs.filter(t => t.id !== tabId);
+      if (remaining.length > 0) setActiveTabId(remaining[remaining.length - 1].id);
     }
 
-    setTabs(prev => {
-      const next = prev.filter(t => t.id !== tabId);
-      if (tabId === activeTabId) {
-        const idx = prev.findIndex(t => t.id === tabId);
-        const nextTab = next[idx] || next[next.length - 1];
-        if (nextTab) setActiveTabId(nextTab.id);
-        else {
-          setActiveTabId(null);
-          return next;
-        }
+    // Remove from state after 500ms — gives Electron time to finish teardown
+    setTimeout(() => {
+      // Clean up webview ref to prevent memory leak
+      if (webviewRefs.current[tabId]) {
+        try {
+          webviewRefs.current[tabId].src = 'about:blank';
+        } catch(e) {}
+        delete webviewRefs.current[tabId];
       }
-      return next;
-    });
-  }, [activeTabId]);
+
+      setTabs(prev => prev.filter(t => t.id !== tabId));
+
+      // Remove from hidden tabs set
+      setHiddenTabs(prev => {
+        const next = new Set(prev);
+        next.delete(tabId);
+        return next;
+      });
+    }, 500);
+  }, [activeTabId, tabs]);
 
   const handleTabReorder = useCallback((from, to) => {
     setTabs(prev => {
@@ -616,7 +624,7 @@ function App() {
                 <WebView
                   key={tab.id}
                   tab={tab}
-                  isActive={tab.id === activeTabId && !isInternal}
+                  isActive={tab.id === activeTabId && !isInternal && !hiddenTabs.has(tab.id)}
                   isSuspended={tab.suspended}
                   isIncognito={isIncognito}
                   webviewRefs={webviewRefs}
@@ -628,6 +636,7 @@ function App() {
                   onBack={handleBack}
                   onForward={handleForward}
                   onRefresh={handleRefresh}
+                  activeTabId={activeTabId}
                 />
               ))}
               {activeTab && activeTab.failedLoad && !isInternal && (

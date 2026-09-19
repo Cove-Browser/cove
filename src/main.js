@@ -91,6 +91,17 @@ app.whenReady().then(() => {
 
   createWindow();
 
+  app.on('web-contents-created', (event, contents) => {
+    contents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+      if (validatedURL === 'about:blank' && errorCode === -2) return;
+      console.error('did-fail-load:', errorCode, errorDescription, validatedURL);
+    });
+
+    contents.on('destroyed', () => {
+      // Suppress post-destroy guest instance errors — benign Electron teardown race
+    });
+  });
+
   const trayIconPath = path.join(__dirname, '../icon-256.png');
   const tray = new Tray(trayIconPath);
   tray.setToolTip('Cove Browser');

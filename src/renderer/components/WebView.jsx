@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, forwardRef } from 'react';
 
-const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRefs, onTabUpdate, onHoveredLink, onContextMenu, onOpenInNewTab, onSearchText, onBack, onForward, onRefresh }, ref) => {
+const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRefs, onTabUpdate, onHoveredLink, onContextMenu, onOpenInNewTab, onSearchText, onBack, onForward, onRefresh, activeTabId }, ref) => {
   const webviewRef = useRef(null);
 
   useEffect(() => {
@@ -11,9 +11,9 @@ const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRe
     const wv = webviewRef.current;
     if (!wv) return;
     if (isSuspended) {
-      try { wv.src = 'about:blank'; } catch(e) {}
+      try { wv.src = 'about:blank'; } catch (e) { return; }
     } else if (!tab.url.startsWith('cove://')) {
-      wv.src = tab.url;
+      try { wv.src = tab.url; } catch (e) { return; }
     }
   }, [tab.url, tab.id, isSuspended]);
 
@@ -28,27 +28,47 @@ const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRe
           ? ':root { color-scheme: dark !important; } * { color-scheme: dark !important; }'
           : ':root { color-scheme: light !important; } * { color-scheme: light !important; }'
         ).catch(() => {});
-      } catch(e) {}
+      } catch (e) { return; }
     };
 
     const onReady = () => {
       applyTheme();
       try {
         onTabUpdate(tab.id, { title: wv.getTitle() || 'New Tab', url: wv.getURL() });
-      } catch(e) {}
+      } catch (e) { return; }
     };
+
     const onTitle = (e) => onTabUpdate(tab.id, { title: e.title });
     const onFavicon = (e) => { if (e.favicons?.[0]) onTabUpdate(tab.id, { favicon: e.favicons[0] }); };
+
     const onNavigate = (e) => {
       onTabUpdate(tab.id, { url: e.url });
-      try { onTabUpdate(tab.id, { canGoBack: wv.navigationHistory.canGoBack(), canGoForward: wv.navigationHistory.canGoForward() }); } catch(e) {}
+      try {
+        if (wv && wv.navigationHistory && tab.id === activeTabId) {
+          onTabUpdate(tab.id, {
+            canGoBack: wv.navigationHistory.canGoBack(),
+            canGoForward: wv.navigationHistory.canGoForward()
+          });
+        }
+      } catch (e) { return; }
     };
+
     const onStart = () => onTabUpdate(tab.id, { isLoading: true });
+
     const onStop = () => {
       onTabUpdate(tab.id, { isLoading: false });
-      try { onTabUpdate(tab.id, { canGoBack: wv.navigationHistory.canGoBack(), canGoForward: wv.navigationHistory.canGoForward() }); } catch(e) {}
+      try {
+        if (wv && wv.navigationHistory && tab.id === activeTabId) {
+          onTabUpdate(tab.id, {
+            canGoBack: wv.navigationHistory.canGoBack(),
+            canGoForward: wv.navigationHistory.canGoForward()
+          });
+        }
+      } catch (e) { return; }
     };
+
     const onHover = (e) => onHoveredLink(e.url || '');
+
     const onFailLoad = (e) => {
       if (e.errorCode === -3) return;
       onTabUpdate(tab.id, {
@@ -58,10 +78,10 @@ const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRe
         failedUrl: e.validatedURL
       });
     };
+
     const handleContextMenuEvent = (e) => {
       const params = e.params;
       let items = [];
-      
       if (params.linkURL) {
         items = [
           { label: 'Open in new tab', action: () => onOpenInNewTab && onOpenInNewTab(params.linkURL) },
@@ -84,10 +104,7 @@ const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRe
           { label: 'Reload', action: () => onRefresh && onRefresh() }
         ];
       }
-      
-      if (onContextMenu) {
-        onContextMenu(items, e.x, e.y);
-      }
+      if (onContextMenu) onContextMenu(items, e.x, e.y);
     };
 
     wv.addEventListener('dom-ready', onReady);
@@ -117,21 +134,26 @@ const WebView = forwardRef(({ tab, isActive, isSuspended, isIncognito, webviewRe
       wv.removeEventListener('context-menu', handleContextMenuEvent);
       observer.disconnect();
     };
-  }, [tab.id, onTabUpdate, onHoveredLink, onContextMenu, onOpenInNewTab, onSearchText, onBack, onForward, onRefresh]);
+  }, [tab.id, onTabUpdate, onHoveredLink, onContextMenu, onOpenInNewTab, onSearchText, onBack, onForward, onRefresh, activeTabId]);
 
   return (
-    <div className={`webview-wrapper ${isActive ? 'visible' : 'hidden'}`} style={{
-      position: 'absolute', top: 0, left: 0,
-      width: '100%', height: '100%',
-      visibility: isActive ? 'visible' : 'hidden',
-      pointerEvents: isActive ? 'auto' : 'none'
-    }}>
-      <webview
-        ref={webviewRef}
-        partition={isIncognito ? 'incognito' : 'persist:cove'}
-        webpreferences="contextIsolation=true, javascript=true, images=true, scrollbounce=true"
-        style={{ width: '100%', height: '100%', border: 'none', display: 'flex' }}
-      />
+    <div
+      className={`webview-wrapper ${isActive ? 'visible' : 'hidden'}`}
+      style={{
+        position: 'absolute', top: 0, left: 0,
+        width: '100%', height: '100%',
+        display: isActive ? 'flex' : 'none',
+        pointerEvents: isActive ? 'auto' : 'none'
+      }}
+    >
+      {!tab.url.startsWith('cove://') && (
+        <webview
+          ref={webviewRef}
+          partition={isIncognito ? 'incognito' : 'persist:cove'}
+          webpreferences="contextIsolation=true, javascript=true, images=true, scrollbounce=true"
+          style={{ width: '100%', height: '100%', border: 'none', display: 'flex' }}
+        />
+      )}
     </div>
   );
 });

@@ -53,35 +53,22 @@ export default function PasswordManager({ onNavigate }) {
     const passwordEntry = passwords.find(p => p.id === id);
     if (!passwordEntry) return;
 
-    const wasVisible = visiblePasswords[id];
-    const willBeVisible = !wasVisible;
-    
-    if (willBeVisible) {
-      try {
-        let decrypted = await window.electronAPI.decryptPassword(passwordEntry.encryptedPassword);
-        setDecryptedPasswords(prev => ({
-          ...prev,
-          [id]: decrypted
-        }));
-        setVisiblePasswords(prev => ({
-          ...prev,
-          [id]: true
-        }));
-        decrypted = null;
-      } catch (error) {
-        console.error('Failed to decrypt password:', error);
-        alert('Failed to decrypt password. Decryption is not available on this system.');
-      }
-    } else {
+    if (visiblePasswords[id]) {
+      setVisiblePasswords(prev => ({ ...prev, [id]: false }));
       setDecryptedPasswords(prev => {
         const updated = { ...prev };
         delete updated[id];
         return updated;
       });
-      setVisiblePasswords(prev => ({
-        ...prev,
-        [id]: false
-      }));
+    } else {
+      try {
+        const decrypted = await window.electronAPI.decryptPassword(passwordEntry.encryptedPassword);
+        setDecryptedPasswords(prev => ({ ...prev, [id]: decrypted }));
+        setVisiblePasswords(prev => ({ ...prev, [id]: true }));
+      } catch (error) {
+        console.error('Failed to decrypt password:', error);
+        alert('Failed to decrypt password. Decryption is not available on this system.');
+      }
     }
   };
 
@@ -392,9 +379,9 @@ export default function PasswordManager({ onNavigate }) {
                     alignItems: 'center',
                     gap: 8
                   }}>
-                    {visiblePasswords[password.id] ? (
+                    {visiblePasswords[password.id] && decryptedPasswords[password.id] !== undefined ? (
                       <span style={{ wordBreak: 'break-all' }}>
-                        {decryptedPasswords[password.id] !== undefined ? decryptedPasswords[password.id] : '••••••'}
+                        {decryptedPasswords[password.id]}
                       </span>
                     ) : (
                       <span>••••••</span>
